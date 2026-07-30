@@ -1,30 +1,38 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 
 import 'package:alegre_mobile/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('counter and theme toggle work', (WidgetTester tester) async {
+    // Build the app with the same provider used in production.
+    await tester.pumpWidget(
+      ChangeNotifierProvider(
+        create: (_) => ThemeController(),
+        child: const MyApp(),
+      ),
+    );
 
-    // Verify that our counter starts at 0.
+    // Check that the main UI elements are visible at startup.
+    expect(find.text('Counter App'), findsOneWidget);
     expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.byType(Switch), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
+    final switchWidget = tester.widget<Switch>(find.byType(Switch));
+    expect(switchWidget.value, isFalse);
+
+    // Toggle the switch and confirm the state updates.
+    await tester.tap(find.byType(Switch));
+    await tester.pump();
+
+    final updatedSwitch = tester.widget<Switch>(find.byType(Switch));
+    expect(updatedSwitch.value, isTrue);
+
+    // Confirm the counter increments when the button is pressed.
     await tester.tap(find.byIcon(Icons.add));
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
   });
 }
