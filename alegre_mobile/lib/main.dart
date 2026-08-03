@@ -63,8 +63,6 @@ class _CounterPageState extends State<CounterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeController = context.watch<ThemeController>();
-
     return Scaffold(
       appBar: AppBar(title: const Text('Counter App')),
       body: Center(
@@ -76,22 +74,16 @@ class _CounterPageState extends State<CounterPage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Changes the label based on the current theme mode.
-                Text(themeController.isDarkMode ? 'Light Mode' : 'Dark Mode'),
-                // Toggle switch that updates the shared theme state.
-                Switch(
-                  value: themeController.isDarkMode,
-                  onChanged: themeController.toggleTheme,
-                  activeThumbColor: Colors.pink[300],
-                  activeTrackColor: Colors.pink[100],
-                  inactiveThumbColor: Colors.grey[400],
-                  inactiveTrackColor: Colors.grey[300],
-                ),
-              ],
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ThemeSettingsPage()),
+                );
+              },
+              icon: const Icon(Icons.color_lens),
+              label: const Text('Theme Settings'),
             ),
           ],
         ),
@@ -102,6 +94,51 @@ class _CounterPageState extends State<CounterPage> {
         tooltip: 'Increment',
         backgroundColor: Colors.pink[300],
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class ThemeSettingsPage extends StatelessWidget {
+  const ThemeSettingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final themeController = context.watch<ThemeController>();
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Theme Settings')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              themeController.isDarkMode ? 'Dark Mode Enabled' : 'Light Mode Enabled',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(themeController.isDarkMode ? 'Light Mode' : 'Dark Mode'),
+                const SizedBox(width: 12),
+                Switch(
+                  value: themeController.isDarkMode,
+                  onChanged: themeController.toggleTheme,
+                  activeThumbColor: Colors.pink[300],
+                  activeTrackColor: Colors.pink[100],
+                  inactiveThumbColor: Colors.grey[400],
+                  inactiveTrackColor: Colors.grey[300],
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Back'),
+            ),
+          ],
+        ),
       ),
     );
   }
