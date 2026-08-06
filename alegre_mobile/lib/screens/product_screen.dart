@@ -59,7 +59,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 12.w),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(12.r),
                     boxShadow: [
                       BoxShadow(
@@ -71,9 +71,20 @@ class _ProductScreenState extends State<ProductScreen> {
                   ),
                   child: TextField(
                     controller: _searchController,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                     decoration: InputDecoration(
-                      icon: const Icon(Icons.search),
+                      icon: Icon(
+                        Icons.search,
+                        color: Theme.of(context).iconTheme.color,
+                      ),
                       hintText: 'Search',
+                      hintStyle: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white54
+                            : Colors.black45,
+                      ),
                       border: InputBorder.none,
                     ),
                     onChanged: (val) {
