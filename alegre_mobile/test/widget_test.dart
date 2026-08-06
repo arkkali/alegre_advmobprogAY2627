@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:alegre_mobile/providers/theme_provider.dart';
 
 void main() {
-  testWidgets('app builds and shows the home screen', (WidgetTester tester) async {
+  testWidgets('app builds and shows the home screen', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       ChangeNotifierProvider(
         create: (_) => ThemeProvider(),
