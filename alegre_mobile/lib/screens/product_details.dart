@@ -11,7 +11,11 @@ class ProductDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(product.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+        title: Text(
+          product.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
@@ -30,7 +34,8 @@ class ProductDetailsScreen extends StatelessWidget {
                   child: Image.network(
                     product.thumbnail,
                     fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 64),
+                    errorBuilder: (context, error, stackTrace) =>
+                        const Icon(Icons.broken_image, size: 64),
                   ),
                 ),
               ),
@@ -48,10 +53,7 @@ class ProductDetailsScreen extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
             SizedBox(height: 12.h),
-            CustomText(
-              text: product.description,
-              fontSize: 14.sp,
-            ),
+            CustomText(text: product.description, fontSize: 14.sp),
             SizedBox(height: 20.h),
             ElevatedButton(
               onPressed: () {

@@ -40,10 +40,7 @@ class _ProductScreenState extends State<ProductScreen> {
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
-              child: CustomText(
-                text: 'No products found.',
-                fontSize: 16.sp,
-              ),
+              child: CustomText(text: 'No products found.', fontSize: 16.sp),
             );
           }
 
@@ -51,8 +48,8 @@ class _ProductScreenState extends State<ProductScreen> {
           final filtered = _searchQuery.isEmpty
               ? products
               : products
-                  .where((p) => p.title.toLowerCase().contains(_searchQuery))
-                  .toList();
+                    .where((p) => p.title.toLowerCase().contains(_searchQuery))
+                    .toList();
 
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
@@ -105,7 +102,8 @@ class _ProductScreenState extends State<ProductScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => ProductDetailsScreen(product: product),
+                              builder: (_) =>
+                                  ProductDetailsScreen(product: product),
                             ),
                           );
                         },
@@ -131,8 +129,9 @@ class _ProductScreenState extends State<ProductScreen> {
                                       child: Image.network(
                                         product.thumbnail,
                                         fit: BoxFit.contain,
-                                        errorBuilder: (context, error, stackTrace) =>
-                                            const Icon(Icons.broken_image),
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                const Icon(Icons.broken_image),
                                       ),
                                     ),
                                   ),
