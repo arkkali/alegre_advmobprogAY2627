@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'product_screen.dart';
 import 'cart_screen.dart';
+import 'profile_screen.dart';
+import '../models/user.dart';
 import '../widgets/custom_text.dart';
 
 class HomeScreen extends StatefulWidget {
   final String username;
-  const HomeScreen({super.key, this.username = ''});
+  final User? user;
+
+  const HomeScreen({super.key, this.username = '', this.user});
 
   @override
   State<HomeScreen> createState() => HomeScreenState();
@@ -27,10 +31,10 @@ class HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           elevation: 2,
-            backgroundColor: _selectedIndex == 1
+          backgroundColor: _selectedIndex == 1
               ? Theme.of(context).colorScheme.primary
               : null,
-            foregroundColor: _selectedIndex == 1
+          foregroundColor: _selectedIndex == 1
               ? Theme.of(context).colorScheme.onPrimary
               : null,
           title: (_selectedIndex == 0)
@@ -39,8 +43,10 @@ class HomeScreenState extends State<HomeScreen> {
                   text: (_selectedIndex == 1)
                       ? 'Cart'
                       : (_selectedIndex == 2)
-                          ? 'Profile'
-                          : 'Home',
+                          ? (widget.user?.firstName.isNotEmpty == true
+                            ? widget.user!.firstName
+                            : widget.user?.username ?? 'Profile')
+                      : 'Home',
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w600,
                 ),
@@ -54,10 +60,24 @@ class HomeScreenState extends State<HomeScreen> {
         body: PageView(
           physics: const NeverScrollableScrollPhysics(),
           controller: _pageController,
-          children: const <Widget>[
+          children: <Widget>[
             ProductScreen(),
-            CartScreen(),
-            Center(child: Text('Profile')),
+            CartScreen(userId: widget.user?.id ?? 1),
+            ProfileScreen(
+              user:
+                  widget.user ??
+                  const User(
+                    id: 0,
+                    username: 'arkkali',
+                    email: 'arkkali@email.com',
+                    firstName: 'Arkkali',
+                    lastName: '',
+                    gender: 'Female',
+                    image: '',
+                    accessToken: '',
+                    refreshToken: '',
+                  ),
+            ),
           ],
           onPageChanged: (page) {
             setState(() {
@@ -81,10 +101,10 @@ class HomeScreenState extends State<HomeScreen> {
           backgroundColor: _selectedIndex == 1
               ? Theme.of(context).bottomNavigationBarTheme.backgroundColor
               : null,
-            selectedItemColor: _selectedIndex == 1
+          selectedItemColor: _selectedIndex == 1
               ? Theme.of(context).colorScheme.primary
               : null,
-            unselectedItemColor: _selectedIndex == 1
+          unselectedItemColor: _selectedIndex == 1
               ? Theme.of(context).colorScheme.onSurfaceVariant
               : null,
           showSelectedLabels: false,
