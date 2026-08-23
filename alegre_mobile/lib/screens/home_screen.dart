@@ -43,7 +43,7 @@ class HomeScreenState extends State<HomeScreen> {
                   text: (_selectedIndex == 1)
                       ? 'Cart'
                       : (_selectedIndex == 2)
-                          ? (widget.user?.firstName.isNotEmpty == true
+                      ? (widget.user?.firstName.isNotEmpty == true
                             ? widget.user!.firstName
                             : widget.user?.username ?? 'Profile')
                       : 'Home',
