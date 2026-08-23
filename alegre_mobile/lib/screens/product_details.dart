@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../models/product.dart';
+import '../services/cart_service.dart';
 import '../widgets/custom_text.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
@@ -56,11 +57,24 @@ class ProductDetailsScreen extends StatelessWidget {
             CustomText(text: product.description, fontSize: 14.sp),
             SizedBox(height: 20.h),
             ElevatedButton(
-              onPressed: () {
-                // Placeholder: add to cart or other action
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Added to cart (placeholder)')),
-                );
+              // Enhancement 3: Add this product using DummyJSON's cart payload.
+              onPressed: () async {
+                try {
+                  await CartService().addProductToCart(
+                    userId: 1,
+                    productId: product.id,
+                    quantity: 1,
+                  );
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Product added to cart')),
+                  );
+                } catch (error) {
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Unable to add product: $error')),
+                  );
+                }
               },
               child: const Text('Add to Cart'),
             ),
