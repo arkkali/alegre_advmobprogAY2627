@@ -20,8 +20,11 @@ class Cart {
   factory Cart.fromJson(Map<String, dynamic> json) {
     return Cart(
       id: json['id'] as int? ?? 0,
-      products: (json['products'] as List?)
-              ?.map((item) => CartProduct.fromJson(item as Map<String, dynamic>))
+      products:
+          (json['products'] as List?)
+              ?.map(
+                (item) => CartProduct.fromJson(item as Map<String, dynamic>),
+              )
               .toList() ??
           [],
       total: (json['total'] as num?)?.toDouble() ?? 0,
@@ -61,8 +64,7 @@ class CartProduct {
       price: (json['price'] as num?)?.toDouble() ?? 0,
       quantity: json['quantity'] as int? ?? 0,
       total: (json['total'] as num?)?.toDouble() ?? 0,
-      discountPercentage:
-          (json['discountPercentage'] as num?)?.toDouble() ?? 0,
+      discountPercentage: (json['discountPercentage'] as num?)?.toDouble() ?? 0,
       discountedTotal: (json['discountedTotal'] as num?)?.toDouble() ?? 0,
       thumbnail: json['thumbnail'] as String? ?? '',
     );

@@ -51,7 +51,8 @@ class _CartScreenState extends State<CartScreen> {
         final subtotal = cart.products.fold<double>(
           0,
           (sum, product) =>
-              sum + product.price * (_quantities[product.id] ?? product.quantity),
+              sum +
+              product.price * (_quantities[product.id] ?? product.quantity),
         );
         final deliveryFee = 0.0;
         return RefreshIndicator(
@@ -83,7 +84,9 @@ class _CartScreenState extends State<CartScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Order confirmation coming soon')),
+                      const SnackBar(
+                        content: Text('Order confirmation coming soon'),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -128,7 +131,11 @@ class _CartItem extends StatelessWidget {
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(15.r),
         boxShadow: const [
-          BoxShadow(color: Color(0x10000000), blurRadius: 8, offset: Offset(0, 3)),
+          BoxShadow(
+            color: Color(0x10000000),
+            blurRadius: 8,
+            offset: Offset(0, 3),
+          ),
         ],
       ),
       child: InkWell(
@@ -136,7 +143,9 @@ class _CartItem extends StatelessWidget {
         // Enhancement 1: Cart items reuse the shared product detail screen.
         onTap: () async {
           try {
-            final fullProduct = await ProductService().getProductById(product.id);
+            final fullProduct = await ProductService().getProductById(
+              product.id,
+            );
             if (!context.mounted) return;
             Navigator.push(
               context,
@@ -244,10 +253,10 @@ class _QuantityButton extends StatelessWidget {
         padding: EdgeInsets.zero,
         onPressed: onPressed,
         style: IconButton.styleFrom(
-            backgroundColor: muted
+          backgroundColor: muted
               ? colorScheme.surfaceContainerHighest
               : colorScheme.primary,
-            foregroundColor: muted
+          foregroundColor: muted
               ? colorScheme.onSurfaceVariant
               : colorScheme.onPrimary,
           shape: RoundedRectangleBorder(
