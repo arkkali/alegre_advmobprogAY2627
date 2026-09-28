@@ -25,24 +25,21 @@ class _SplashScreenState extends State<SplashScreen> {
 
   // Enhancement 1: Check the saved token and restore persistent authentication.
   Future<void> _checkAuthentication() async {
-    final loggedInFuture = _userService.isLoggedIn();
     await Future.wait([
-      loggedInFuture,
-      precacheImage(const AssetImage('assets/images/nubdexchange_logo.png'), context),
+      precacheImage(
+        const AssetImage('assets/images/nubdexchange_logo.png'),
+        context,
+      ),
       Future<void>.delayed(const Duration(milliseconds: 1200)),
     ]);
-    final loggedIn = await loggedInFuture;
-    final user = loggedIn ? await _userService.getUser() : null;
-    if (user != null && user.username != 'arkkali') {
-      await _userService.logout();
-    }
+    final user = await _userService.getUserData();
     if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (_) => user == null || user.username != 'arkkali'
-          ? const SignInScreen()
-          : HomeScreen(user: user),
+            ? const SignInScreen()
+            : HomeScreen(user: user),
       ),
     );
   }

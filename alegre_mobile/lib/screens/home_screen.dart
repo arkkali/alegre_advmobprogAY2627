@@ -19,6 +19,25 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   final PageController _pageController = PageController();
+  late User _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentUser =
+        widget.user ??
+        const User(
+          id: 0,
+          username: 'arkkali',
+          email: 'arkkali@email.com',
+          firstName: 'Arkkali',
+          lastName: '',
+          gender: 'Female',
+          image: '',
+          accessToken: '',
+          refreshToken: '',
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +62,9 @@ class HomeScreenState extends State<HomeScreen> {
                   text: (_selectedIndex == 1)
                       ? 'Cart'
                       : (_selectedIndex == 2)
-                      ? (widget.user?.firstName.isNotEmpty == true
-                            ? widget.user!.firstName
-                            : widget.user?.username ?? 'Profile')
+                      ? (_currentUser.username.isNotEmpty
+                            ? _currentUser.username
+                            : 'Profile')
                       : 'Home',
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w600,
@@ -62,21 +81,12 @@ class HomeScreenState extends State<HomeScreen> {
           controller: _pageController,
           children: <Widget>[
             ProductScreen(),
-            CartScreen(userId: widget.user?.id ?? 1),
+            CartScreen(userId: _currentUser.id > 0 ? _currentUser.id : 1),
             ProfileScreen(
-              user:
-                  widget.user ??
-                  const User(
-                    id: 0,
-                    username: 'arkkali',
-                    email: 'arkkali@email.com',
-                    firstName: 'Arkkali',
-                    lastName: '',
-                    gender: 'Female',
-                    image: '',
-                    accessToken: '',
-                    refreshToken: '',
-                  ),
+              user: _currentUser,
+              onUserChanged: (user) {
+                setState(() => _currentUser = user);
+              },
             ),
           ],
           onPageChanged: (page) {

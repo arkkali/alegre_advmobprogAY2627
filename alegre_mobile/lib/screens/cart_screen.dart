@@ -19,6 +19,7 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   late Future<Cart> _cartFuture;
   final Map<int, int> _quantities = {};
+  final Set<int> _removedProductIds = {};
 
   @override
   void initState() {
@@ -45,10 +46,13 @@ class _CartScreenState extends State<CartScreen> {
         }
 
         final cart = snapshot.data!;
-        for (final product in cart.products) {
+        final visibleProducts = cart.products
+            .where((product) => !_removedProductIds.contains(product.id))
+            .toList();
+        for (final product in visibleProducts) {
           _quantities.putIfAbsent(product.id, () => product.quantity);
         }
-        final subtotal = cart.products.fold<double>(
+        final subtotal = visibleProducts.fold<double>(
           0,
           (sum, product) =>
               sum +
@@ -65,12 +69,46 @@ class _CartScreenState extends State<CartScreen> {
           child: ListView(
             padding: EdgeInsets.fromLTRB(14.w, 14.h, 14.w, 20.h),
             children: [
-              ...cart.products.map(
+              if (visibleProducts.isNotEmpty)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton.icon(
+                    onPressed: () => _emptyCart(context),
+                    icon: const Icon(Icons.delete_sweep_outlined),
+                    label: const Text('Empty cart'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: colorScheme.error,
+                    ),
+                  ),
+                ),
+              if (visibleProducts.isEmpty)
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 70.h),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.remove_shopping_cart_outlined,
+                        size: 54.sp,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      SizedBox(height: 12.h),
+                      CustomText(
+                        text: 'Your cart is empty',
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ],
+                  ),
+                ),
+              ...visibleProducts.map(
                 (product) => _CartItem(
                   product: product,
                   quantity: _quantities[product.id] ?? product.quantity,
                   onQuantityChanged: (quantity) {
                     setState(() => _quantities[product.id] = quantity);
+                  },
+                  onRemove: () {
+                    setState(() => _removedProductIds.add(product.id));
                   },
                 ),
               ),
@@ -110,17 +148,45 @@ class _CartScreenState extends State<CartScreen> {
       },
     );
   }
+
+  Future<void> _emptyCart(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Empty cart?'),
+        content: const Text('Remove all products from your cart?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Empty cart'),
+          ),
+        ],
+      ),
+    );
+    if (!mounted || confirmed != true) return;
+    final cart = await _cartFuture;
+    if (!mounted) return;
+    setState(() {
+      _removedProductIds.addAll(cart.products.map((product) => product.id));
+    });
+  }
 }
 
 class _CartItem extends StatelessWidget {
   final CartProduct product;
   final int quantity;
   final ValueChanged<int> onQuantityChanged;
+  final VoidCallback onRemove;
 
   const _CartItem({
     required this.product,
     required this.quantity,
     required this.onQuantityChanged,
+    required this.onRemove,
   });
 
   @override
@@ -204,6 +270,12 @@ class _CartItem extends StatelessWidget {
               SizedBox(width: 8.w),
               Column(
                 children: [
+                  _QuantityButton(
+                    icon: Icons.delete_outline,
+                    onPressed: onRemove,
+                    muted: true,
+                  ),
+                  SizedBox(height: 5.h),
                   _QuantityButton(
                     icon: Icons.add,
                     onPressed: () => onQuantityChanged(quantity + 1),

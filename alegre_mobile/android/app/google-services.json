@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "63295472311",
+    "project_id": "advmobprog-firebase-2add1",
+    "storage_bucket": "advmobprog-firebase-2add1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63295472311:android:9b02cc7672914e4a6fc332",
+        "android_client_info": {
+          "package_name": "com.example.alegre_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHhWm0rKdSvuf4QG8YO3IXwXQlmiq18FA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

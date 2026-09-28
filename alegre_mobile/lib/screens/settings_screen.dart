@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
+import '../services/user_service.dart';
 import '../widgets/custom_text.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -35,6 +36,21 @@ class SettingsScreen extends StatelessWidget {
             value: themeProvider.isDark,
             onChanged: (bool value) {
               themeProvider.toggleTheme();
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Log Out'),
+            onTap: () async {
+              // Activity 5: End the Firebase session and return to login.
+              await UserService().signOut();
+              if (!context.mounted) return;
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/signin',
+                (_) => false,
+              );
             },
           ),
         ],
