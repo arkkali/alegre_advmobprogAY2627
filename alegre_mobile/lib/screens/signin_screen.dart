@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../models/user.dart';
+import '../providers/theme_provider.dart';
 import '../services/user_service.dart';
 import '../widgets/custom_text.dart';
 import 'home_screen.dart';
@@ -64,130 +66,138 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 26.w),
-            child: Form(
-              key: _formKey,
-              autovalidateMode: _hasSubmitted
-                  ? AutovalidateMode.onUserInteraction
-                  : AutovalidateMode.disabled,
-              child: Column(
-                children: [
-                  Image.asset(
-                    'assets/images/nubdexchange_logo.png',
-                    width: 110.w,
-                  ),
-                  SizedBox(height: 12.h),
-                  CustomText(
-                    text: 'Welcome back',
-                    fontSize: 25.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  SizedBox(height: 6.h),
-                  CustomText(
-                    text: 'Sign in to continue shopping',
-                    fontSize: 13.sp,
-                  ),
-                  SizedBox(height: 30.h),
-                  SegmentedButton<LoginType>(
-                    segments: const [
-                      ButtonSegment(
-                        value: LoginType.dummyJson,
-                        label: Text('DummyJSON'),
-                      ),
-                      ButtonSegment(
-                        value: LoginType.firebase,
-                        label: Text('Firebase'),
-                      ),
-                    ],
-                    selected: {_loginType},
-                    onSelectionChanged: _isLoading
-                        ? null
-                        : (selection) {
-                            setState(() {
-                              _loginType = selection.first;
-                              _usernameController.clear();
-                              _passwordController.clear();
-                              _hasSubmitted = false;
-                            });
-                          },
-                  ),
-                  SizedBox(height: 16.h),
-                  _field(
-                    controller: _usernameController,
-                    label: _loginType == LoginType.firebase
-                        ? 'Email'
-                        : 'Username',
-                    icon: Icons.person_outline,
-                    keyboardType: _loginType == LoginType.firebase
-                        ? TextInputType.emailAddress
-                        : TextInputType.text,
-                  ),
-                  SizedBox(height: 14.h),
-                  _field(
-                    controller: _passwordController,
-                    label: 'Password',
-                    icon: Icons.lock_outline,
-                    obscureText: true,
-                    suffixIcon: IconButton(
-                      tooltip: _isPasswordVisible
-                          ? 'Hide password'
-                          : 'Preview password',
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                      ),
-                      onPressed: () {
-                        setState(
-                          () => _isPasswordVisible = !_isPasswordVisible,
-                        );
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 24.h),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 52.h,
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _login,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: colors.primary,
-                        foregroundColor: colors.onPrimary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
+    final lightTheme = context.read<ThemeProvider>().lightTheme;
+    return Theme(
+      data: lightTheme,
+      child: Builder(
+        builder: (context) {
+          final colors = Theme.of(context).colorScheme;
+          return Scaffold(
+            body: SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: 26.w),
+                  child: Form(
+                    key: _formKey,
+                    autovalidateMode: _hasSubmitted
+                        ? AutovalidateMode.onUserInteraction
+                        : AutovalidateMode.disabled,
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          'assets/images/nubdexchange_logo.png',
+                          width: 110.w,
                         ),
-                      ),
-                      child: _isLoading
-                          ? SizedBox(
-                              width: 20.w,
-                              height: 20.h,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: colors.onPrimary,
+                        SizedBox(height: 12.h),
+                        CustomText(
+                          text: 'Welcome back',
+                          fontSize: 25.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        SizedBox(height: 6.h),
+                        CustomText(
+                          text: 'Sign in to continue shopping',
+                          fontSize: 13.sp,
+                        ),
+                        SizedBox(height: 30.h),
+                        SegmentedButton<LoginType>(
+                          segments: const [
+                            ButtonSegment(
+                              value: LoginType.dummyJson,
+                              label: Text('DummyJSON'),
+                            ),
+                            ButtonSegment(
+                              value: LoginType.firebase,
+                              label: Text('Firebase'),
+                            ),
+                          ],
+                          selected: {_loginType},
+                          onSelectionChanged: _isLoading
+                              ? null
+                              : (selection) {
+                                  setState(() {
+                                    _loginType = selection.first;
+                                    _usernameController.clear();
+                                    _passwordController.clear();
+                                    _hasSubmitted = false;
+                                  });
+                                },
+                        ),
+                        SizedBox(height: 16.h),
+                        _field(
+                          controller: _usernameController,
+                          label: _loginType == LoginType.firebase
+                              ? 'Email'
+                              : 'Username',
+                          icon: Icons.person_outline,
+                          keyboardType: _loginType == LoginType.firebase
+                              ? TextInputType.emailAddress
+                              : TextInputType.text,
+                        ),
+                        SizedBox(height: 14.h),
+                        _field(
+                          controller: _passwordController,
+                          label: 'Password',
+                          icon: Icons.lock_outline,
+                          obscureText: true,
+                          suffixIcon: IconButton(
+                            tooltip: _isPasswordVisible
+                                ? 'Hide password'
+                                : 'Preview password',
+                            icon: Icon(
+                              _isPasswordVisible
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                            ),
+                            onPressed: () {
+                              setState(
+                                () => _isPasswordVisible = !_isPasswordVisible,
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(height: 24.h),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 52.h,
+                          child: ElevatedButton(
+                            onPressed: _isLoading ? null : _login,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colors.primary,
+                              foregroundColor: colors.onPrimary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.r),
                               ),
-                            )
-                          : const Text('Sign In'),
+                            ),
+                            child: _isLoading
+                                ? SizedBox(
+                                    width: 20.w,
+                                    height: 20.h,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: colors.onPrimary,
+                                    ),
+                                  )
+                                : const Text('Sign In'),
+                          ),
+                        ),
+                        if (_loginType == LoginType.firebase) ...[
+                          SizedBox(height: 12.h),
+                          TextButton(
+                            onPressed: _isLoading
+                                ? null
+                                : () => Navigator.pushNamed(context, '/signup'),
+                            child: const Text('Create an Account'),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
-                  if (_loginType == LoginType.firebase) ...[
-                    SizedBox(height: 12.h),
-                    TextButton(
-                      onPressed: _isLoading
-                          ? null
-                          : () => Navigator.pushNamed(context, '/signup'),
-                      child: const Text('Create an Account'),
-                    ),
-                  ],
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/theme_provider.dart';
 import '../services/user_service.dart';
 import 'home_screen.dart';
 import 'signin_screen.dart';
@@ -46,46 +48,54 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 130.w,
-              height: 130.w,
-              child: Image.asset(
-                'assets/images/nubdexchange_logo.png',
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) => Icon(
-                  Icons.image_not_supported_outlined,
-                  size: 64.sp,
-                  color: colors.primary,
-                ),
+    final lightTheme = context.read<ThemeProvider>().lightTheme;
+    return Theme(
+      data: lightTheme,
+      child: Builder(
+        builder: (context) {
+          final colors = Theme.of(context).colorScheme;
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 130.w,
+                    height: 130.w,
+                    child: Image.asset(
+                      'assets/images/nubdexchange_logo.png',
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) => Icon(
+                        Icons.image_not_supported_outlined,
+                        size: 64.sp,
+                        color: colors.primary,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 18.h),
+                  Text(
+                    'NUBD Exchange',
+                    style: TextStyle(
+                      color: colors.primary,
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                  SizedBox(height: 24.h),
+                  SizedBox(
+                    width: 28.w,
+                    height: 28.w,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                      color: colors.primary,
+                    ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 18.h),
-            Text(
-              'NUBD Exchange',
-              style: TextStyle(
-                color: colors.primary,
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'Poppins',
-              ),
-            ),
-            SizedBox(height: 24.h),
-            SizedBox(
-              width: 28.w,
-              height: 28.w,
-              child: CircularProgressIndicator(
-                strokeWidth: 3,
-                color: colors.primary,
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'product_screen.dart';
 import 'cart_screen.dart';
 import 'profile_screen.dart';
+import 'chat_screen.dart';
 import '../models/user.dart';
 import '../widgets/custom_text.dart';
 
@@ -95,14 +96,16 @@ class HomeScreenState extends State<HomeScreen> {
             });
           },
         ),
-        // Enhancement 2: Chat is a floating action and is hidden on the Cart screen.
         floatingActionButton: _selectedIndex == 1
             ? null
             : FloatingActionButton(
                 tooltip: 'Open chat',
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Chat is coming soon')),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ChatScreen(currentUser: _currentUser),
+                    ),
                   );
                 },
                 child: const Icon(Icons.chat),

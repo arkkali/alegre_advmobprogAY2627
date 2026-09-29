@@ -13,6 +13,7 @@ class User {
   final String accessToken;
   final String refreshToken;
   final LoginType loginType;
+  final String firebaseUid;
 
   const User({
     required this.id,
@@ -27,6 +28,7 @@ class User {
     required this.accessToken,
     required this.refreshToken,
     this.loginType = LoginType.dummyJson,
+    this.firebaseUid = '',
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -45,6 +47,7 @@ class User {
       loginType: json['loginType'] == 'firebase'
           ? LoginType.firebase
           : LoginType.dummyJson,
+      firebaseUid: json['firebaseUid'] as String? ?? '',
     );
   }
 
@@ -61,6 +64,7 @@ class User {
     'accessToken': accessToken,
     'refreshToken': refreshToken,
     'loginType': loginType.name,
+    'firebaseUid': firebaseUid,
   };
 
   User copyWith({
@@ -76,6 +80,7 @@ class User {
     String? accessToken,
     String? refreshToken,
     LoginType? loginType,
+    String? firebaseUid,
   }) {
     return User(
       id: id ?? this.id,
@@ -90,6 +95,7 @@ class User {
       accessToken: accessToken ?? this.accessToken,
       refreshToken: refreshToken ?? this.refreshToken,
       loginType: loginType ?? this.loginType,
+      firebaseUid: firebaseUid ?? this.firebaseUid,
     );
   }
 }

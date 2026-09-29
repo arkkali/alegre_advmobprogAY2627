@@ -14,3 +14,11 @@
 
 ## Lab Activity 5: The application supports two authentication workflows: DummyJSON authenticates a username and password via an external endpoint to populate the local user model, whereas Firebase uses email/password authentication where sign-up creates a managed account, stores extra profile fields (e.g., name, age, contact) in Cloud Firestore under the user's UID, and automatically restores persistent sessions upon app relaunch. The UserService serves as the core abstraction layer that decouples authentication and account-management logic from Flutter UI widgets, handling sign-in, account creation, profile loading, reauthentication for sensitive actions, and account deletion. Ultimately, integrating Firebase benefits the Flutter application by providing managed accounts, persistent state, token refreshes, and Firestore security rules out of the box, eliminating the need to build custom credential storage in the app.
 
+## Lab Activity 6: Discussion
+
+Firestore stores registered users in the `userProfiles` collection. Each direct conversation uses a deterministic document ID built from the two participant Firebase UIDs, and its messages are stored in the nested `messages` collection under that chat document. Each message contains the sender ID, receiver ID, text, timestamp, and delivery status.
+
+The chat list excludes the currently logged-in user, so a user cannot normally start a conversation with themselves. The chat service also rejects a self-chat when both participant IDs are equal. This prevents ambiguous sender and receiver behavior.
+
+The chat service separates Firestore reads and writes from the widgets. The chat list loads registered users and filters them by name, username, or email. The chat detail screen listens for messages in real time, sends new messages, updates sending and delivered states, marks received messages as seen, and animates message bubbles.
+

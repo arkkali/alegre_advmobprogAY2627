@@ -227,6 +227,7 @@ class UserService {
       accessToken: '',
       refreshToken: '',
       loginType: LoginType.firebase,
+      firebaseUid: authUser.uid,
     );
   }
 

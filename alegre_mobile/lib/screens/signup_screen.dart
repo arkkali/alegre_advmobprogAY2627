@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/theme_provider.dart';
 import '../services/user_service.dart';
 import 'home_screen.dart';
 
@@ -70,109 +72,125 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Scaffold(
-      appBar: AppBar(title: const Text('Create account')),
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            padding: EdgeInsets.all(20.w),
-            children: [
-              _textField('First Name', _firstNameController),
-              SizedBox(height: 12.h),
-              _textField('Last Name', _lastNameController),
-              SizedBox(height: 12.h),
-              _textField(
-                'Age',
-                _ageController,
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  final age = int.tryParse(value?.trim() ?? '');
-                  return age == null || age < 1 || age > 120
-                      ? 'Enter an age from 1 to 120'
-                      : null;
-                },
-              ),
-              SizedBox(height: 12.h),
-              _textField(
-                'Contact Number',
-                _contactController,
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  final digits = (value ?? '').replaceAll(RegExp(r'\D'), '');
-                  return digits.length < 7 || digits.length > 15
-                      ? 'Enter a valid contact number'
-                      : null;
-                },
-              ),
-              SizedBox(height: 12.h),
-              _textField('Username', _usernameController),
-              SizedBox(height: 12.h),
-              _textField(
-                'Email Address',
-                _emailController,
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  final email = value?.trim() ?? '';
-                  return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email)
-                      ? null
-                      : 'Enter a valid email address';
-                },
-              ),
-              SizedBox(height: 12.h),
-              _textField(
-                'Password',
-                _passwordController,
-                obscureText: !_passwordVisible,
-                validator: (value) => (value?.length ?? 0) < 6
-                    ? 'Password must be at least 6 characters'
-                    : null,
-                suffixIcon: IconButton(
-                  tooltip: _passwordVisible ? 'Hide password' : 'Show password',
-                  onPressed: () =>
-                      setState(() => _passwordVisible = !_passwordVisible),
-                  icon: Icon(
-                    _passwordVisible
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                  ),
-                ),
-              ),
-              SizedBox(height: 24.h),
-              SizedBox(
-                height: 52.h,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _createAccount,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: colors.primary,
-                    foregroundColor: colors.onPrimary,
-                  ),
-                  child: _isLoading
-                      ? SizedBox(
-                          width: 20.w,
-                          height: 20.h,
-                          child: const CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Text('Create account'),
-                ),
-              ),
-              SizedBox(height: 8.h),
-              TextButton(
-                onPressed: _isLoading
-                    ? null
-                    : () => Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        '/signin',
-                        (_) => false,
+    final lightTheme = context.read<ThemeProvider>().lightTheme;
+    return Theme(
+      data: lightTheme,
+      child: Builder(
+        builder: (context) {
+          final colors = Theme.of(context).colorScheme;
+          return Scaffold(
+            appBar: AppBar(title: const Text('Create account')),
+            body: SafeArea(
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  padding: EdgeInsets.all(20.w),
+                  children: [
+                    _textField('First Name', _firstNameController),
+                    SizedBox(height: 12.h),
+                    _textField('Last Name', _lastNameController),
+                    SizedBox(height: 12.h),
+                    _textField(
+                      'Age',
+                      _ageController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        final age = int.tryParse(value?.trim() ?? '');
+                        return age == null || age < 1 || age > 120
+                            ? 'Enter an age from 1 to 120'
+                            : null;
+                      },
+                    ),
+                    SizedBox(height: 12.h),
+                    _textField(
+                      'Contact Number',
+                      _contactController,
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        final digits = (value ?? '').replaceAll(
+                          RegExp(r'\D'),
+                          '',
+                        );
+                        return digits.length < 7 || digits.length > 15
+                            ? 'Enter a valid contact number'
+                            : null;
+                      },
+                    ),
+                    SizedBox(height: 12.h),
+                    _textField('Username', _usernameController),
+                    SizedBox(height: 12.h),
+                    _textField(
+                      'Email Address',
+                      _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        final email = value?.trim() ?? '';
+                        return RegExp(
+                              r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
+                            ).hasMatch(email)
+                            ? null
+                            : 'Enter a valid email address';
+                      },
+                    ),
+                    SizedBox(height: 12.h),
+                    _textField(
+                      'Password',
+                      _passwordController,
+                      obscureText: !_passwordVisible,
+                      validator: (value) => (value?.length ?? 0) < 6
+                          ? 'Password must be at least 6 characters'
+                          : null,
+                      suffixIcon: IconButton(
+                        tooltip: _passwordVisible
+                            ? 'Hide password'
+                            : 'Show password',
+                        onPressed: () => setState(
+                          () => _passwordVisible = !_passwordVisible,
+                        ),
+                        icon: Icon(
+                          _passwordVisible
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                        ),
                       ),
-                child: const Text('Already have an account? Sign In'),
+                    ),
+                    SizedBox(height: 24.h),
+                    SizedBox(
+                      height: 52.h,
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _createAccount,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: colors.primary,
+                          foregroundColor: colors.onPrimary,
+                        ),
+                        child: _isLoading
+                            ? SizedBox(
+                                width: 20.w,
+                                height: 20.h,
+                                child: const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text('Create account'),
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    TextButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () => Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              '/signin',
+                              (_) => false,
+                            ),
+                      child: const Text('Already have an account? Sign In'),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
